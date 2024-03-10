@@ -1,0 +1,116 @@
+basePath: /v1
+
+definitions:
+  models.AccessToken:
+    properties:
+      access_token:
+        type: string
+    type: object
+
+  models.Error:
+    properties:
+      id:
+        type: string
+        format: uuid
+      timestamp:
+        type: string
+      error:
+        type: string
+    type: object
+      
+
+  models.Login:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+
+  models.Prices:
+    properties:
+      price:
+        type: integer
+      location_id:
+        type: integer
+      microcategory_id:
+        type: integer
+      matrix_id:
+        type: integer
+      user_segment_id:
+        type: integer
+    type: object
+
+  request.Prices:
+    properties: 
+      location_id:
+        type: integer
+      microcategory_id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+
+paths:
+  /auth/login:
+    post:
+      consumes:
+        - application/json
+      description: |
+        Returns access JWT token
+      parameters:
+        - description: user data
+          in: body
+          name: LoginBody
+          required: true
+          schema:
+            $ref: '#/definitions/models.Login'
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Login successfull
+          schema:
+            $ref: '#/definitions/models.AccessToken'
+        "400":
+          description: Invalid data
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Server error
+          schema:
+            $ref: "#/definitions/models.Error"
+      summary: Login user
+      tags:
+        - Auth
+  
+  /prices:
+    post:
+      consumes:
+        - application/json
+      description: Returns prices
+      parameters:
+        - description: price data
+          in: body
+          name: PricesBody
+          required: true
+          schema:
+            $ref: '#/definitions/request.Prices'
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Successfull getting data
+          schema:
+            $ref: '#/definitions/models.Prices'
+        "400":
+          description: Error validate data
+          schema:
+            $ref: '#/definitions/models.Error'
+        "500":
+          description: Server error
+          schema:
+            $ref: "#/definitions/models.Error"
+      summary: Get prices
+      tags:
+        - Prices
